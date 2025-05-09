@@ -1,3 +1,4 @@
+// Mengimpor package yang diperlukan untuk Firebase, Flutter, dan Provider
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,36 +13,43 @@ import 'domain/usecase/get_students.dart';
 import 'domain/usecase/update_student.dart';
 import 'presentation/pages/student_page.dart';
 
+// Fungsi main untuk menjalankan aplikasi
 Future<void> main() async {
-  // Setup repository dan usecases
+  // Menunggu agar widget binding selesai dan Firebase dapat diinisialisasi
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi Firebase dengan konfigurasi platform saat ini
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, //Ini di gunakan untuk inisialisasi kelas DefaultFirebaseOption
+    options: DefaultFirebaseOptions.currentPlatform, // Menyediakan pengaturan default Firebase untuk platform saat ini
   );
+
+  // Membuat instance repository untuk akses data mahasiswa
   final repository = StudentRepositoryImpl();
 
+  // Menjalankan aplikasi dengan menggunakan ChangeNotifierProvider untuk menyediakan StudentViewModel
   runApp(
     ChangeNotifierProvider(
       create: (_) => StudentViewModel(
-        getStudents: GetStudents(repository),
-        addStudent: AddStudent(repository),
-        updateStudent: UpdateStudent(repository),
-        deleteStudent: DeleteStudent(repository),
+        getStudents: GetStudents(repository),  // Menyediakan use case untuk mendapatkan mahasiswa
+        addStudent: AddStudent(repository),    // Menyediakan use case untuk menambah mahasiswa
+        updateStudent: UpdateStudent(repository), // Menyediakan use case untuk memperbarui mahasiswa
+        deleteStudent: DeleteStudent(repository), // Menyediakan use case untuk menghapus mahasiswa
       ),
-      child: MyApp(),
+      child: MyApp(), // Menjalankan aplikasi utama
     ),
   );
 }
 
+// Widget utama aplikasi
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Student App',
+      title: 'Student App',  // Judul aplikasi
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue, // Tema warna biru untuk aplikasi
       ),
-      home: StudentPage(),
+      home: StudentPage(), // Halaman utama aplikasi yang menampilkan daftar mahasiswa
     );
   }
 }
